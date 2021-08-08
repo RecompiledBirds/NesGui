@@ -13,7 +13,7 @@ namespace NesGUI
         Rect,
         Checkbox,
         Button,
-        Texfield,
+        Textfield,
         Label,
         Line
     }
@@ -21,12 +21,23 @@ namespace NesGUI
 
     public class GUIItem
     {
-        public GUIItem(GUIType type, string label, string name, Rect rect)
+        public GUIItem(GUIType type, string label, string name, GUIItem parent)
         {
+            this.parent = parent;
             guiType = type;
             this.label = label;
             this.name = name;
-            this.rect = rect;
+            this.rect = new Rect(parent.Pos, parent.Size);
+        }
+
+        public GUIItem parent;
+
+        public void UpdateRectChildren()
+        {
+            foreach(GUIItem i in GuiMaker.items.Where(x => x.parent == this))
+            {
+                i.rect = new Rect(this.Pos, this.Size);
+            }
         }
 
         public GUIItem(GUIType type, string name, Vector2 size, Vector2 position)
@@ -39,6 +50,13 @@ namespace NesGUI
 
 
         Rect rect;
+        public Rect GetRect
+        {
+            get
+            {
+                return rect;
+            }
+        }
         public Vector2 size;
         public Vector2 pos;
         public Vector2 Size
