@@ -77,6 +77,8 @@ namespace NesGUI
             }
             private string xSizeBuffer;
             private string ySizeBuffer;
+            private string xTwoSizeBuffer;
+            private string yTwoSizeBuffer;
             private GUIItem rectTouse;
 
 
@@ -94,11 +96,16 @@ namespace NesGUI
                 return result;
             }
 
-
+            
 
             string name;
             public override void DoWindowContents(Rect inRect)
             {
+                Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
+                if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
+                {
+                    Close();
+                }
                 Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(inRect.xMax, 40));
                 if (itemToMakeType == GUIType.Rect)
                 {
@@ -131,14 +138,53 @@ namespace NesGUI
                     name = Widgets.TextField(inputNameRect, name);
                     return;
                 }
+                if (itemToMakeType == GUIType.Line)
+                {
+                    GameFont prevFont = Text.Font;
+                    Text.Font = GameFont.Medium;
+                    Vector2 posOne = new Vector2(0,0);
+                    Vector2 posTwo = new Vector2(0,0);
+                    Widgets.LabelFit(labelRect, "Create Line");
+                    Text.Font = prevFont;
+                    float rectSizePos = 40;
+                    Rect labelPosOneRect = new Rect(new Vector2(inRect.x, rectSizePos), new Vector2(40, 40));
+                    Rect xPosOneRect = new Rect(new Vector2(labelPosOneRect.xMax + 10, rectSizePos), new Vector2(30, 40));
+                    Rect yPosOneRect = new Rect(new Vector2(xPosOneRect.xMax, rectSizePos), new Vector2(30, 40));
+                    Rect labelPosTwoRect = new Rect(new Vector2(yPosOneRect.xMax+20, rectSizePos), new Vector2(40, 40));
+                    Rect xPosTwoRect = new Rect(new Vector2(labelPosTwoRect.xMax + 10, rectSizePos), new Vector2(30, 40));
+                    Rect yPosTwoRect = new Rect(new Vector2(xPosTwoRect.xMax, rectSizePos), new Vector2(30, 40));
 
-                if (itemToMakeType == GUIType.Button || itemToMakeType == GUIType.Label)
+                    Rect nameLabelRect = new Rect(new Vector2(inRect.x, rectSizePos * 2), new Vector2(40, 40));
+                    Rect nameFieldRect = new Rect(new Vector2(nameLabelRect.xMax + 5, rectSizePos * 2), new Vector2(100, 40));
+
+                    Widgets.Label(nameLabelRect, "Name:");
+                    name = Widgets.TextField(nameFieldRect, name);
+
+                    Widgets.Label(labelPosOneRect, "Start point:");
+                    Widgets.TextFieldNumeric(xPosOneRect, ref posOne.x, ref xSizeBuffer);
+                    Widgets.TextFieldNumeric(yPosOneRect, ref posOne.y, ref ySizeBuffer);
+                    
+                    Widgets.Label(labelPosTwoRect, "End point:");
+                    Widgets.TextFieldNumeric(xPosTwoRect, ref posTwo.x, ref xTwoSizeBuffer);
+                    Widgets.TextFieldNumeric(yPosTwoRect, ref posTwo.y, ref yTwoSizeBuffer);
+
+                    Widgets.DrawLine(new Vector2(posOne.x,posOne.y+80), new Vector2(posTwo.x,posTwo.y+80), Color.white, 1);
+                   
+                    Rect createRect = new Rect(new Vector2(inRect.x, rectSizePos*3), new Vector2(inRect.xMax, 40));
+                    if (Widgets.ButtonText(createRect, "Create!"))
+                    {
+                        GuiMaker.MakeLine(posOne, posTwo, name);
+                        this.Close();
+                    }
+                    return;
+                }
+                if (itemToMakeType == GUIType.Button || itemToMakeType == GUIType.Label || itemToMakeType==GUIType.Checkbox || itemToMakeType==GUIType.Textfield)
                 {
                     GameFont prevFont = Text.Font;
 
                     Text.Font = GameFont.Medium;
 
-                    Widgets.LabelFit(labelRect, "Create Button");
+                    Widgets.LabelFit(labelRect, $"Create {( itemToMakeType==GUIType.Button ? "button"  : itemToMakeType==GUIType.Label ? "label" : itemToMakeType == GUIType.Checkbox ? "checkbox" : "text field"  )}");
                     Text.Font = prevFont;
                     float rectSizePos = 40;
 
@@ -168,13 +214,18 @@ namespace NesGUI
                         if (itemToMakeType == GUIType.Button)
                         {
                             GuiMaker.MakeButton(rectTouse, name);
-                            this.Close();
                         }
-                        else
+                        else if(itemToMakeType == GUIType.Label)
                         {
                             GuiMaker.MakeLabel(rectTouse, name);
-                            this.Close();
+                        }else if(itemToMakeType == GUIType.Checkbox)
+                        {
+                            GuiMaker.MakeCheckBox(rectTouse, name);
+                        }else if (itemToMakeType == GUIType.Textfield)
+                        {
+                            GuiMaker.MakeTextField(rectTouse, name);
                         }
+                        this.Close();
                     }
                 }
             }
@@ -203,10 +254,10 @@ namespace NesGUI
                 {
                     Find.WindowStack.Add(new CreateItemWinow(GUIType.Label));
                 }),
-                new FloatMenuOption("Line", delegate ()
+                /*new FloatMenuOption("Line", delegate ()
                 {
                     Find.WindowStack.Add(new CreateItemWinow(GUIType.Line));
-                }),
+                }),*/
                   new FloatMenuOption("Textfield", delegate ()
                 {
                     Find.WindowStack.Add(new CreateItemWinow(GUIType.Textfield));
@@ -262,8 +313,8 @@ namespace NesGUI
             public override void DoWindowContents(Rect inRect)
             {
                 Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(inRect.xMax - 60, 40));
-                Rect closeRect = new Rect(new Vector2(labelRect.xMax, 10), new Vector2(60, 40));
-                if (Widgets.ButtonText(closeRect, "Exit"))
+                Rect closeRect = new Rect(new Vector2(inRect.xMax-25, 5), new Vector2(20, 20));
+                if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
                 {
                     Close();
                 }
@@ -306,7 +357,7 @@ namespace NesGUI
                 {
                     Find.WindowStack.Add(new FloatMenu(SetRect()));
                 }
-                if (gI.GuiType == GUIType.Label || gI.GuiType == GUIType.Button)
+                if (gI.GuiType == GUIType.Label || gI.GuiType == GUIType.Button || gI.GuiType==GUIType.Checkbox)
                 {
                     Rect newLabelRect = new Rect(new Vector2(selectRect.xMax, rectSizePos), new Vector2(50, 40));
                     Rect newLabelInput = new Rect(new Vector2(newLabelRect.xMax, rectSizePos), new Vector2(90, 40));
@@ -333,7 +384,11 @@ namespace NesGUI
         }
         public override void DoWindowContents(Rect inRect)
         {
-
+            Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
+            if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
+            {
+                Close();
+            }
 
             Widgets.DrawLine(new Vector2(inRect.x, 50), new Vector2(inRect.xMax, 50), Color.white, 1f);
             Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(50, 40));
@@ -349,8 +404,20 @@ namespace NesGUI
 
             Rect changeRectPos = new Rect(new Vector2(yPosInputField.xMax + 5, 10), new Vector2(80, 40));
 
-            Rect enableOrDisableDrawnRects = new Rect(new Vector2(changeRectPos.xMax + 20, 10), new Vector2(80, 40));
+
+
+            Rect enableOrDisableDrawnRects = new Rect(new Vector2(changeRectPos.xMax + 10, 10), new Vector2(80, 40));
+
+            Rect exportButtonRect = new Rect(new Vector2(inRect.xMax - 60, 10), new Vector2(40, 40));
+
+            bool export = Widgets.ButtonText(exportButtonRect, "Export GUI");
+            if (export)
+            {
+                NesGUI_OutputGen.ReadAndWriteGUI();
+            }
+            
             bool toggleRect = Widgets.ButtonText(enableOrDisableDrawnRects, "Toggle rects");
+            
 
             Widgets.Label(labelRect, "NesGUI");
             Widgets.Label(labelSizeRect, "Change window size:");
@@ -367,7 +434,7 @@ namespace NesGUI
             Widgets.DrawBox(new Rect(rectPos, rectSize), 4);
             if (toggleRect)
             {
-                Find.WindowStack.Add(new FloatMenu(toggleRects()));
+                Find.WindowStack.Add(new FloatMenu(ToggleRects()));
             }
             foreach (GUIItem rect in GuiMaker.rectangles)
             {
@@ -388,27 +455,23 @@ namespace NesGUI
                 Find.WindowStack.Add(new FloatMenu(GetEditableItems()));
             }
 
-            foreach (GUIItem button in GuiMaker.buttons)
+            foreach(GUIItem item in GuiMaker.items)
             {
-                Widgets.ButtonText(button.GetRect, button.label);
-            }
-            foreach (GUIItem label in GuiMaker.labels)
-            {
-                Widgets.Label(label.GetRect, label.label);
+                item.Draw();
             }
         }
 
-        public bool isEnabled(GUIItem rect)
+        public bool IsEnabled(GUIItem rect)
         {
             return ( !GuiMaker.enabledRects.ContainsKey(rect) || GuiMaker.enabledRects[rect]);
         }
-        public List<FloatMenuOption> toggleRects()
+        public List<FloatMenuOption> ToggleRects()
         {
             List<FloatMenuOption> res = new List<FloatMenuOption>();
 
             foreach (GUIItem rect in GuiMaker.rectangles)
             {
-                res.Add(new FloatMenuOption($"{rect.name} {(isEnabled(rect) ? "(on)":"(off)")}", delegate()
+                res.Add(new FloatMenuOption($"{rect.name} {(IsEnabled(rect) ? "(on)":"(off)")}", delegate()
                 {
                     if (!GuiMaker.enabledRects.ContainsKey(rect))
                     {

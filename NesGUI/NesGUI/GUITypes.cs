@@ -30,7 +30,49 @@ namespace NesGUI
             this.rect = new Rect(parent.Pos, parent.Size);
         }
 
+        public GUIItem(Vector2 posOne, Vector2 posTwo,  string label,Color color)
+        {
+            name = label;
+            this.posOne = posOne;
+            this.posTwo = posTwo;
+            guiType = GUIType.Line;
+            
+        }
+
+        public Vector2 posOne;
+        public Vector2 posTwo;
+        public Color color;
+
         public GUIItem parent;
+        bool b = false;
+        public void Draw()
+        {
+            if (guiType == GUIType.Button)
+            {
+                Widgets.ButtonText(GetRect, label);
+                return;
+            }
+            if (guiType == GUIType.Label)
+            {
+                Widgets.Label(GetRect, label);
+                return;
+            }
+            if (guiType == GUIType.Checkbox)
+            {
+                Widgets.CheckboxLabeled(GetRect,label, ref b);
+                return;
+            }
+            if (guiType == GUIType.Line)
+            {
+                Widgets.DrawLine(posOne, posTwo, color, 1);
+                return;
+            }
+            if (guiType == GUIType.Textfield)
+            {
+                Widgets.TextField(GetRect,label);
+            }
+
+        }
 
         public void UpdateRectChildren()
         {
