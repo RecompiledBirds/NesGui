@@ -19,6 +19,7 @@ namespace NesGUI
             {
                 string varName = item.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
+                program.AppendLine("//Rect pass");
                 program.AppendLine($"Rect {varName} = new Rect(new Vector2({item.Pos.x}f,{item.Pos.y}f),new Vector2({item.Size.x}f,{item.Pos.y}f));");
                 rects++;
             }
@@ -34,6 +35,7 @@ namespace NesGUI
                 rectName= new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = button.name;
                 varName = new string(varName.ToCharArray().Where(ch=>!char.IsWhiteSpace(ch)).ToArray());
+                program.AppendLine("//Button pass");
                 program.AppendLine($"bool {varName} = Widgets.ButtonText({rectName},\"{button.label}\");");
                 buttons++;
             }
@@ -51,7 +53,7 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = label.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine($"Widgets.label({rectName},\"{label.label}\");");
+                program.AppendLine($"Widgets.Label({rectName},\"{label.label}\");");
                 labels++;
             }
             Log.Message($"Read {labels} labels.");
@@ -67,7 +69,9 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = field.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine($"string {varName} = Widgets.TextField({rectName},{varName});");
+                program.AppendLine("//Textfield pass");
+                program.AppendLine($"string {varName};");
+                program.AppendLine($"{varName} = Widgets.TextField({rectName},{varName});");
                 tf++;
             }
             Log.Message($"Read {tf} textfields.");
@@ -84,6 +88,7 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = checkbox.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
+                program.AppendLine("//Checkbox pass");
                 program.AppendLine($"bool {varName} = false;");
                 program.AppendLine($" Widgets.CheckboxLabeled({rectName},\"{checkbox.label}\",ref {varName});");
                 box++;
@@ -98,11 +103,14 @@ namespace NesGUI
             path = $"{path}/NesGUI/Output";
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
             path += "/output.txt";
+            program.AppendLine("//COMPILED BY NESGUI");
             ReadRects();
             ReadButtons();
+            ReadCheckBoxes();
             ReadLabels();
             ReadTextfields();
-            ReadCheckBoxes();
+            program.AppendLine("//END NESGUI CODE");
+
             File.WriteAllText(path, program.ToString());
             program.Clear();
         }

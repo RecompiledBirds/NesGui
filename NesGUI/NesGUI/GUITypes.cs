@@ -49,17 +49,17 @@ namespace NesGUI
         {
             if (guiType == GUIType.Button)
             {
-                Widgets.ButtonText(GetRect, label);
+                Widgets.ButtonText(GetRectWithOffset, label);
                 return;
             }
             if (guiType == GUIType.Label)
             {
-                Widgets.Label(GetRect, label);
+                Widgets.Label(GetRectWithOffset, label);
                 return;
             }
             if (guiType == GUIType.Checkbox)
             {
-                Widgets.CheckboxLabeled(GetRect,label, ref b);
+                Widgets.CheckboxLabeled(GetRectWithOffset, label, ref b);
                 return;
             }
             if (guiType == GUIType.Line)
@@ -69,7 +69,7 @@ namespace NesGUI
             }
             if (guiType == GUIType.Textfield)
             {
-                Widgets.TextField(GetRect,label);
+                Widgets.TextField(GetRectWithOffset, label);
             }
 
         }
@@ -92,6 +92,14 @@ namespace NesGUI
 
 
         Rect rect;
+
+        public Rect GetRectWithOffset
+        {
+            get
+            {
+                return new Rect(new Vector2(rect.position.x,rect.position.y+50) , rect.size);
+            }
+        }
         public Rect GetRect
         {
             get

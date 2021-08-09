@@ -42,7 +42,7 @@ namespace NesGUI
         }
 
         private static Vector2 rectSize = new Vector2(100, 100);
-        private static Vector2 rectPos = new Vector2(50, 50);
+        private static Vector2 rectPos = new Vector2(0, 0);
         private string xSizeBuffer;
         private string ySizeBuffer;
         private string xPosBuffer;
@@ -132,7 +132,7 @@ namespace NesGUI
                     Widgets.DrawBox(new Rect(new Vector2(pos.x, pos.y + 80 + 40), size));
                     if (Widgets.ButtonText(createRect, "Create!") && name != null)
                     {
-                        GuiMaker.MakeRect(size, pos, name);
+                        GuiMaker.MakeRect(size,new Vector2(rectPos.x,rectPos.y), name);
                         this.Close();
                     }
                     name = Widgets.TextField(inputNameRect, name);
@@ -309,7 +309,7 @@ namespace NesGUI
             {
                 gI = item;
             }
-
+            Vector2 pos;
             public override void DoWindowContents(Rect inRect)
             {
                 Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(inRect.xMax - 60, 40));
@@ -326,18 +326,20 @@ namespace NesGUI
                     Rect labelSizeRect = new Rect(new Vector2(inRect.x, rectSizePos), new Vector2(40, 40));
                     Rect xSizeRect = new Rect(new Vector2(labelSizeRect.xMax + 10, rectSizePos), new Vector2(30, 40));
                     Rect ySizeRect = new Rect(new Vector2(xSizeRect.xMax, rectSizePos), new Vector2(30, 40));
-
                     Rect labelPosRect = new Rect(new Vector2(ySizeRect.xMax + 20, rectSizePos), new Vector2(40, 40));
                     Rect xPosRect = new Rect(new Vector2(labelPosRect.xMax + 10, rectSizePos), new Vector2(30, 40));
                     Rect yPosRect = new Rect(new Vector2(xPosRect.xMax + 10, rectSizePos), new Vector2(30, 40));
 
                     Widgets.Label(labelSizeRect, "Rect size:");
                     Widgets.Label(labelPosRect, "Rect pos:");
+
                     Widgets.TextFieldNumeric(xSizeRect, ref gI.size.x, ref xSizeBuffer);
                     Widgets.TextFieldNumeric(ySizeRect, ref gI.size.y, ref ySizeBuffer);
-                    Widgets.TextFieldNumeric(xPosRect, ref gI.pos.x, ref xPosBuffer, rectPos.x);
-                    Widgets.TextFieldNumeric(yPosRect, ref gI.pos.y, ref yPosBuffer, rectPos.y);
 
+                    Widgets.TextFieldNumeric(xPosRect, ref gI.pos.x, ref xPosBuffer);
+                    Widgets.TextFieldNumeric(yPosRect, ref gI.pos.y, ref yPosBuffer);
+                    
+                    
                     gI.UpdateRectChildren();
                     return;
                 }
@@ -440,8 +442,8 @@ namespace NesGUI
             {
                 if (!GuiMaker.enabledRects.ContainsKey(rect) || GuiMaker.enabledRects[rect])
                 {
-                    Rect r = new Rect(rect.Pos, rect.Size);
-
+                    Rect r = new Rect(new Vector2(rect.Pos.x,rect.Pos.y+50), rect.Size);
+                   
                     Widgets.DrawBoxSolidWithOutline(r, Color.clear, Color.red);
                     Widgets.Label(r, rect.name);
                 }
