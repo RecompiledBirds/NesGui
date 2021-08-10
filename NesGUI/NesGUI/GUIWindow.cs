@@ -101,6 +101,7 @@ namespace NesGUI
             string name;
             public override void DoWindowContents(Rect inRect)
             {
+                Text.Font = GameFont.Small;
                 Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
                 if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
                 {
@@ -312,6 +313,7 @@ namespace NesGUI
             Vector2 pos;
             public override void DoWindowContents(Rect inRect)
             {
+                Text.Font = GameFont.Small;
                 Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(inRect.xMax - 60, 40));
                 Rect closeRect = new Rect(new Vector2(inRect.xMax-25, 5), new Vector2(20, 20));
                 if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
@@ -388,6 +390,7 @@ namespace NesGUI
         #endregion
         public override void DoWindowContents(Rect inRect)
         {
+            Text.Font = GameFont.Small;
             Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
             if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
             {

@@ -18,7 +18,7 @@ namespace NesGUI
         Line
     }
 
-
+    //TODO: Seperate GUITypes into seperate types, inheriting from GUIItem
     public class GUIItem
     {
         public GUIItem(GUIType type, string label, string name, GUIItem parent)
