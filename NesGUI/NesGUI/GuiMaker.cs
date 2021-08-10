@@ -115,12 +115,8 @@ namespace NesGUI
             GUITextElement GI = new GUITextElement(rect,label,label, anchor, font, GUITextElement.TextElemType.Label);
             AddItem(GI, "labels");
         }
-        /*public static void MakeLine(Vector2 posOne, Vector2 posTwo, string label)
-        {
-            GUIItem GI = new GUIItem(posOne, posTwo, label, Color.white);
-            lines.Add(GI);
-            items.Add(GI);
-        }*/
+
+
         public static void MakeCheckBox(GUIRect rect, string label, TextAnchor anchor, GameFont font)
         {
             GUITextElement GI = new GUITextElement(rect, label, label, anchor, font, GUITextElement.TextElemType.Checkbox);

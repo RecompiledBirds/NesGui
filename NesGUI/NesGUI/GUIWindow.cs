@@ -64,7 +64,7 @@ namespace NesGUI
             {
                 get
                 {
-                    return new Vector2(500, 500);
+                    return new Vector2(560, 140);
                 }
             }
 
@@ -88,7 +88,34 @@ namespace NesGUI
             private string yTwoSizeBuffer;
             private GUIRect rectTouse;
 
+            public List<FloatMenuOption> GetFonts()
+            {
+                List<FloatMenuOption> res = new List<FloatMenuOption>();
 
+                foreach (GameFont font in Enum.GetValues(typeof(GameFont)))
+                {
+                    res.Add(new FloatMenuOption($"{font}  {(this.font == font ? "(current)" : "")}", delegate ()
+                    {
+                        this.font = font;
+                    }));
+                }
+                return res;
+            }
+
+            public List<FloatMenuOption> GetAnchors()
+            {
+
+                List<FloatMenuOption> res = new List<FloatMenuOption>();
+
+                foreach (TextAnchor anchor in Enum.GetValues(typeof(TextAnchor)))
+                {
+                    res.Add(new FloatMenuOption($"{anchor}  {(this.anchor == anchor ? "(current)" : "")}", delegate ()
+                    {
+                        this.anchor = anchor;
+                    }));
+                }
+                return res;
+            }
 
             public List<FloatMenuOption> rectList()
             {
@@ -188,52 +215,94 @@ namespace NesGUI
                 }
                 if (itemToMakeType ==typeof(GUITextElement))
                 {
+                    //COMPILED BY NESGUI
+                    //Prepare varibles
+
                     GameFont prevFont = Text.Font;
+                    TextAnchor textAnchor = Text.Anchor;
 
-                    Text.Font = GameFont.Medium;
+                    //Rect pass
 
-                    Widgets.LabelFit(labelRect, $"Create {( elemType==GUITextElement.TextElemType.Button ? "button"  : elemType == GUITextElement.TextElemType.Label ? "label" : elemType == GUITextElement.TextElemType.Checkbox? "checkbox" : "text field"  )}");
+                    Rect creatinglabelrect = new Rect(new Vector2(5f, 5f), new Vector2(488f, 30f));
+                    Rect namelabel = new Rect(new Vector2(5f, 40f), new Vector2(100f, 30f));
+                    Rect namefield = new Rect(new Vector2(110f, 40f), new Vector2(383f, 30f));
+                    Rect assignrectbuttonrect = new Rect(new Vector2(5f, 75f), new Vector2(100f, 30f));
+                    Rect createbuttonrect = new Rect(new Vector2(393f, 75f), new Vector2(100f, 30f));
+                    Rect Setfontrect = new Rect(new Vector2(110f, 75f), new Vector2(130f, 30f));
+                    Rect Setanchorrect = new Rect(new Vector2(250f, 75f), new Vector2(130f, 30f));
+
+                    //Button pass
+
+
+                    bool AssignRect = Widgets.ButtonText(assignrectbuttonrect, "Assign Rect");
+
+
+
+                    bool Create = Widgets.ButtonText(createbuttonrect, "Create!");
+
+
+                    bool Setfont = Widgets.ButtonText(Setfontrect, "Set font");
+
+
+
+                    bool Setanchor = Widgets.ButtonText(Setanchorrect, "Set anchor");
+
+                    //Label pass
+
+
+                    Widgets.Label(namelabel, "Set name/label:");
+
+                    prevFont = Text.Font;
+                    textAnchor = Text.Anchor;
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+
+                    Widgets.Label(creatinglabelrect, $"Creating {elemType}");
+
                     Text.Font = prevFont;
-                    float rectSizePos = 40;
+                    Text.Anchor = textAnchor;
 
-                    Rect selectRect = new Rect(new Vector2(inRect.x, rectSizePos), new Vector2(90, 40));
-                    Rect labelSetLabelRect = new Rect(new Vector2(selectRect.xMax + 20, rectSizePos), new Vector2(40, 40));
-                    Rect labelTF = new Rect(new Vector2(labelSetLabelRect.xMax, rectSizePos), new Vector2(90, 40));
+                    //Textfield pass
 
-                    bool setRect;
-                    if (rectTouse == null)
-                    {
-                        setRect = Widgets.ButtonText(selectRect, "Select rect");
-                    }
-                    else
-                    {
-                        setRect = Widgets.ButtonText(selectRect, $"Using rec: {rectTouse.name}");
-                    }
-                    if (setRect)
+
+                    name = Widgets.TextField(namefield, name);
+
+
+                    //END NESGUI CODE
+                    if (AssignRect)
                     {
                         Find.WindowStack.Add(new FloatMenu(rectList()));
                     }
-                    Widgets.Label(labelSetLabelRect, "Set label:");
-                    name = Widgets.TextField(labelTF, name);
-
-                    Rect createRect = new Rect(new Vector2(inRect.x, 80), new Vector2(inRect.xMax, 40));
-                    if (Widgets.ButtonText(createRect, "Create!") && name != null &&rectTouse!=null )
+                    if (Setfont)
                     {
-                        if (elemType==GUITextElement.TextElemType.Button)
+                        Find.WindowStack.Add(new FloatMenu(GetFonts()));
+                    }
+                    if (Setanchor)
+                    {
+                        Find.WindowStack.Add(new FloatMenu(GetAnchors()));
+                    }
+                    if (Create)
+                    {
+                        if (GUITextElement.TextElemType.Button == elemType)
                         {
-                            GuiMaker.MakeButton(rectTouse, name,anchor,font);
+                            GuiMaker.MakeButton(rectTouse, name, anchor, font);
+                            return;
                         }
-                        else if(elemType == GUITextElement.TextElemType.Label)
+                        if (GUITextElement.TextElemType.Label == elemType)
                         {
-                            GuiMaker.MakeLabel(rectTouse, name,anchor,font);
-                        }else if(elemType == GUITextElement.TextElemType.Checkbox)
-                        {
-                            GuiMaker.MakeCheckBox(rectTouse, name,anchor,font);
-                        }else if (elemType == GUITextElement.TextElemType.Textfield)
-                        {
-                            GuiMaker.MakeTextField(rectTouse, name,anchor,font);
+                            GuiMaker.MakeLabel(rectTouse, name, anchor, font);
+                            return;
                         }
-                        this.Close();
+                        if (GUITextElement.TextElemType.Checkbox == elemType)
+                        {
+                            GuiMaker.MakeCheckBox(rectTouse, name, anchor, font);
+                            return;
+                        }
+                        if (GUITextElement.TextElemType.Textfield == elemType)
+                        {
+                            GuiMaker.MakeTextField(rectTouse, name, anchor, font);
+                            return;
+                        }
                     }
                 }
             }
@@ -371,8 +440,8 @@ namespace NesGUI
                     //These weren't done by NesGUI 100%, but I did use it to position them.
                     Widgets.TextFieldNumeric(posXRect, ref rect.pos.x, ref xPosBuffer);
                     Widgets.TextFieldNumeric(posyrect, ref rect.pos.y, ref yPosBuffer);
-                    Widgets.TextFieldNumeric(sizeXRect, ref rect.size.x, ref xPosBuffer);
-                    Widgets.TextFieldNumeric(sizeYRect, ref rect.size.y, ref yPosBuffer);
+                    Widgets.TextFieldNumeric(sizeXRect, ref rect.size.x, ref xSizeBuffer);
+                    Widgets.TextFieldNumeric(sizeYRect, ref rect.size.y, ref ySizeBuffer);
                     //END NESGUI CODE
                     rect.UpdateRect();
  
