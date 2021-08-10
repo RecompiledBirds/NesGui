@@ -70,23 +70,30 @@ namespace NesGUI
 
 
 
-            private GUIType itemToMakeType;
-            public CreateItemWinow(GUIType type)
+            
+            public CreateItemWinow(Type type, GUITextElement.TextElemType textType = GUITextElement.TextElemType.Button, TextAnchor anchor = TextAnchor.MiddleLeft, GameFont font =GameFont.Tiny)
             {
                 itemToMakeType = type;
+                elemType = textType;
+                this.font = font;
+                this.anchor = anchor;
             }
+            private Type itemToMakeType;
+            private TextAnchor anchor;
+            private GameFont font;
+            private GUITextElement.TextElemType elemType;
             private string xSizeBuffer;
             private string ySizeBuffer;
             private string xTwoSizeBuffer;
             private string yTwoSizeBuffer;
-            private GUIItem rectTouse;
+            private GUIRect rectTouse;
 
 
 
             public List<FloatMenuOption> rectList()
             {
                 List<FloatMenuOption> result = new List<FloatMenuOption>();
-                foreach (GUIItem i in GuiMaker.rectangles)
+                foreach (GUIRect i in GuiMaker.Rectangles)
                 {
                     result.Add(new FloatMenuOption(i.name, delegate ()
                     {
@@ -108,11 +115,11 @@ namespace NesGUI
                     Close();
                 }
                 Rect labelRect = new Rect(new Vector2(inRect.x, 10), new Vector2(inRect.xMax, 40));
-                if (itemToMakeType == GUIType.Rect)
+                if (itemToMakeType == typeof(GUIRect))
                 {
                     GameFont prevFont = Text.Font;
                     Vector2 size = new Vector2(100, 100);
-                    Vector2 pos = rectPos;
+                    Vector2 pos = new Vector2(0,0);
                     Text.Font = GameFont.Medium;
 
                     Widgets.LabelFit(labelRect, "Create Rectangle");
@@ -133,13 +140,13 @@ namespace NesGUI
                     Widgets.DrawBox(new Rect(new Vector2(pos.x, pos.y + 80 + 40), size));
                     if (Widgets.ButtonText(createRect, "Create!") && name != null)
                     {
-                        GuiMaker.MakeRect(size,new Vector2(rectPos.x,rectPos.y), name);
+                        GuiMaker.MakeRect(size,pos, name);
                         this.Close();
                     }
                     name = Widgets.TextField(inputNameRect, name);
                     return;
                 }
-                if (itemToMakeType == GUIType.Line)
+                if (itemToMakeType == typeof(GUILine))
                 {
                     GameFont prevFont = Text.Font;
                     Text.Font = GameFont.Medium;
@@ -172,20 +179,20 @@ namespace NesGUI
                     Widgets.DrawLine(new Vector2(posOne.x,posOne.y+80), new Vector2(posTwo.x,posTwo.y+80), Color.white, 1);
                    
                     Rect createRect = new Rect(new Vector2(inRect.x, rectSizePos*3), new Vector2(inRect.xMax, 40));
-                    if (Widgets.ButtonText(createRect, "Create!"))
+                    if (Widgets.ButtonText(createRect, "Create!")&&rectTouse!=null)
                     {
-                        GuiMaker.MakeLine(posOne, posTwo, name);
+                        //GuiMaker.MakeLine(posOne, posTwo, name);
                         this.Close();
                     }
                     return;
                 }
-                if (itemToMakeType == GUIType.Button || itemToMakeType == GUIType.Label || itemToMakeType==GUIType.Checkbox || itemToMakeType==GUIType.Textfield)
+                if (itemToMakeType ==typeof(GUITextElement))
                 {
                     GameFont prevFont = Text.Font;
 
                     Text.Font = GameFont.Medium;
 
-                    Widgets.LabelFit(labelRect, $"Create {( itemToMakeType==GUIType.Button ? "button"  : itemToMakeType==GUIType.Label ? "label" : itemToMakeType == GUIType.Checkbox ? "checkbox" : "text field"  )}");
+                    Widgets.LabelFit(labelRect, $"Create {( elemType==GUITextElement.TextElemType.Button ? "button"  : elemType == GUITextElement.TextElemType.Label ? "label" : elemType == GUITextElement.TextElemType.Checkbox? "checkbox" : "text field"  )}");
                     Text.Font = prevFont;
                     float rectSizePos = 40;
 
@@ -210,21 +217,21 @@ namespace NesGUI
                     name = Widgets.TextField(labelTF, name);
 
                     Rect createRect = new Rect(new Vector2(inRect.x, 80), new Vector2(inRect.xMax, 40));
-                    if (Widgets.ButtonText(createRect, "Create!") && name != null)
+                    if (Widgets.ButtonText(createRect, "Create!") && name != null &&rectTouse!=null )
                     {
-                        if (itemToMakeType == GUIType.Button)
+                        if (elemType==GUITextElement.TextElemType.Button)
                         {
-                            GuiMaker.MakeButton(rectTouse, name);
+                            GuiMaker.MakeButton(rectTouse, name,anchor,font);
                         }
-                        else if(itemToMakeType == GUIType.Label)
+                        else if(elemType == GUITextElement.TextElemType.Label)
                         {
-                            GuiMaker.MakeLabel(rectTouse, name);
-                        }else if(itemToMakeType == GUIType.Checkbox)
+                            GuiMaker.MakeLabel(rectTouse, name,anchor,font);
+                        }else if(elemType == GUITextElement.TextElemType.Checkbox)
                         {
-                            GuiMaker.MakeCheckBox(rectTouse, name);
-                        }else if (itemToMakeType == GUIType.Textfield)
+                            GuiMaker.MakeCheckBox(rectTouse, name,anchor,font);
+                        }else if (elemType == GUITextElement.TextElemType.Textfield)
                         {
-                            GuiMaker.MakeTextField(rectTouse, name);
+                            GuiMaker.MakeTextField(rectTouse, name,anchor,font);
                         }
                         this.Close();
                     }
@@ -241,19 +248,19 @@ namespace NesGUI
             {
                 new FloatMenuOption("Rectangle", delegate ()
                 {
-                    Find.WindowStack.Add(new CreateItemWinow(GUIType.Rect));
+                    Find.WindowStack.Add(new CreateItemWinow(typeof(GUIRect)));
                 }),
                 new FloatMenuOption("Button", delegate ()
                 {
-                    Find.WindowStack.Add(new CreateItemWinow(GUIType.Button));
+                    Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement)));
                 }),
                 new FloatMenuOption("CheckBox", delegate ()
                 {
-                    Find.WindowStack.Add(new CreateItemWinow(GUIType.Checkbox));
+                    Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Checkbox));
                 }),
                 new FloatMenuOption("Label", delegate ()
                 {
-                    Find.WindowStack.Add(new CreateItemWinow(GUIType.Label));
+                    Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Label));
                 }),
                 /*new FloatMenuOption("Line", delegate ()
                 {
@@ -261,7 +268,7 @@ namespace NesGUI
                 }),*/
                   new FloatMenuOption("Textfield", delegate ()
                 {
-                    Find.WindowStack.Add(new CreateItemWinow(GUIType.Textfield));
+                    Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Textfield));
                 })
             };
 
@@ -273,7 +280,7 @@ namespace NesGUI
         {
             List<FloatMenuOption> result = new List<FloatMenuOption>();
 
-            foreach (GUIItem i in GuiMaker.items)
+            foreach (GUIItem i in GuiMaker.Items)
             {
                 result.Add(new FloatMenuOption(i.name, delegate () {
                     Find.WindowStack.Add(new EditableItemWindow(i));
@@ -310,7 +317,7 @@ namespace NesGUI
             {
                 gI = item;
             }
-            Vector2 pos;
+
             public override void DoWindowContents(Rect inRect)
             {
                 Text.Font = GameFont.Small;
@@ -322,7 +329,7 @@ namespace NesGUI
                 }
                 float rectSizePos = 40;
                 Widgets.LabelFit(labelRect, $"Editing: {gI.name}");
-                if (gI.GuiType == GUIType.Rect)
+                if (gI is GUIRect rect)
                 {
 
                     Rect labelSizeRect = new Rect(new Vector2(inRect.x, rectSizePos), new Vector2(40, 40));
@@ -335,14 +342,14 @@ namespace NesGUI
                     Widgets.Label(labelSizeRect, "Rect size:");
                     Widgets.Label(labelPosRect, "Rect pos:");
 
-                    Widgets.TextFieldNumeric(xSizeRect, ref gI.size.x, ref xSizeBuffer);
-                    Widgets.TextFieldNumeric(ySizeRect, ref gI.size.y, ref ySizeBuffer);
+                    Widgets.TextFieldNumeric(xSizeRect, ref rect.size.x, ref xSizeBuffer);
+                    Widgets.TextFieldNumeric(ySizeRect, ref rect.size.y, ref ySizeBuffer);
 
-                    Widgets.TextFieldNumeric(xPosRect, ref gI.pos.x, ref xPosBuffer);
-                    Widgets.TextFieldNumeric(yPosRect, ref gI.pos.y, ref yPosBuffer);
-                    
-                    
-                    gI.UpdateRectChildren();
+                    Widgets.TextFieldNumeric(xPosRect, ref rect.pos.x, ref xPosBuffer);
+                    Widgets.TextFieldNumeric(yPosRect, ref rect.pos.y, ref yPosBuffer);
+
+                    rect.UpdateRect();
+ 
                     return;
                 }
                 Rect selectRect = new Rect(new Vector2(inRect.x, rectSizePos), new Vector2(90, 40));
@@ -361,7 +368,7 @@ namespace NesGUI
                 {
                     Find.WindowStack.Add(new FloatMenu(SetRect()));
                 }
-                if (gI.GuiType == GUIType.Label || gI.GuiType == GUIType.Button || gI.GuiType==GUIType.Checkbox)
+                if (gI.GetType() == typeof(GUITextElement))
                 {
                     Rect newLabelRect = new Rect(new Vector2(selectRect.xMax, rectSizePos), new Vector2(50, 40));
                     Rect newLabelInput = new Rect(new Vector2(newLabelRect.xMax, rectSizePos), new Vector2(90, 40));
@@ -375,12 +382,12 @@ namespace NesGUI
             public List<FloatMenuOption> SetRect()
             {
                 List<FloatMenuOption> result = new List<FloatMenuOption>();
-                foreach (GUIItem i in GuiMaker.rectangles)
+                foreach (GUIRect i in GuiMaker.Rectangles)
                 {
                     result.Add(new FloatMenuOption(i.name, delegate ()
                     {
                         gI.parent = i;
-                        i.UpdateRectChildren();
+                        
                     }));
                 }
                 return result;
@@ -390,7 +397,7 @@ namespace NesGUI
         #endregion
         public override void DoWindowContents(Rect inRect)
         {
-            Text.Font = GameFont.Small;
+            Text.Font = GameFont.Tiny;
             Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
             if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
             {
@@ -428,10 +435,10 @@ namespace NesGUI
             bool toggleRect = Widgets.ButtonText(enableOrDisableDrawnRects, "Toggle rects");
             
 
-            Widgets.Label(labelRect, "NesGUI");
+            Widgets.Label(labelRect, "NesGUI \n V 0.0.2A");
             Widgets.Label(labelSizeRect, "Change window size:");
             Widgets.Label(labelPosRect, "Change window pos:");
-            bool makeNewItem = Widgets.ButtonText(addItemButtonRect, "new item");
+            bool makeNewItem = Widgets.ButtonText(addItemButtonRect, "New item");
             Widgets.TextFieldNumeric(xSizeInputField, ref rectSize.x, ref xSizeBuffer);
             Widgets.TextFieldNumeric(ySizeInputField, ref rectSize.y, ref ySizeBuffer);
 
@@ -445,16 +452,6 @@ namespace NesGUI
             {
                 Find.WindowStack.Add(new FloatMenu(ToggleRects()));
             }
-            foreach (GUIItem rect in GuiMaker.rectangles)
-            {
-                if (!GuiMaker.enabledRects.ContainsKey(rect) || GuiMaker.enabledRects[rect])
-                {
-                    Rect r = new Rect(new Vector2(rect.Pos.x,rect.Pos.y+50), rect.Size);
-                   
-                    Widgets.DrawBoxSolidWithOutline(r, Color.clear, Color.red);
-                    Widgets.Label(r, rect.name);
-                }
-            }
             if (makeNewItem)
             {
                 Find.WindowStack.Add(new FloatMenu(GetItemOptions()));
@@ -467,7 +464,7 @@ namespace NesGUI
             {
                 Find.WindowStack.Add(new FloatMenu(DeleteItems()));
             }
-            foreach(GUIItem item in GuiMaker.items)
+            foreach(GUIItem item in GuiMaker.Items)
             {
                 item.Draw();
             }
@@ -482,11 +479,11 @@ namespace NesGUI
         {
             List<FloatMenuOption> res = new List<FloatMenuOption>();
 
-            foreach (GUIItem item in GuiMaker.items)
+            foreach (GUIItem item in GuiMaker.Items)
             {
                 res.Add(new FloatMenuOption($"{item.name}", delegate ()
                 {
-                    GuiMaker.Delete(item);
+                    GuiMaker.DeleteItem(item);
                 }));
             }
 
@@ -496,7 +493,7 @@ namespace NesGUI
         {
             List<FloatMenuOption> res = new List<FloatMenuOption>();
 
-            foreach (GUIItem rect in GuiMaker.rectangles)
+            foreach (GUIItem rect in GuiMaker.Rectangles)
             {
                 res.Add(new FloatMenuOption($"{rect.name} {(IsEnabled(rect) ? "(on)":"(off)")}", delegate()
                 {

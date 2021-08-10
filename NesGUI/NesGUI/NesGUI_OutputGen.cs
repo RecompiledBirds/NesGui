@@ -15,12 +15,12 @@ namespace NesGUI
         public static void ReadRects()
         {
             int rects = 0;
-            foreach(GUIItem item in GuiMaker.rectangles)
+            foreach(GUIRect item in GuiMaker.Rectangles)
             {
                 string varName = item.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("//Rect pass");
-                program.AppendLine($"Rect {varName} = new Rect(new Vector2({item.Pos.x}f,{item.Pos.y}f),new Vector2({item.Size.x}f,{item.Pos.y}f));");
+                
+                program.AppendLine($"Rect {varName} = new Rect(new Vector2({item.pos.x}f,{item.pos.y}f),new Vector2({item.size.x}f,{item.size.y}f));");
                 rects++;
             }
             Log.Message($"Read {rects} rects.");
@@ -29,13 +29,13 @@ namespace NesGUI
         public static void ReadButtons()
         {
             int buttons = 0;
-            foreach (GUIItem button in GuiMaker.buttons)
+            foreach (GUIItem button in GuiMaker.Buttons)
             {
                 string rectName = button.parent.name;
                 rectName= new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = button.name;
                 varName = new string(varName.ToCharArray().Where(ch=>!char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("//Button pass");
+                
                 program.AppendLine($"bool {varName} = Widgets.ButtonText({rectName},\"{button.label}\");");
                 buttons++;
             }
@@ -47,7 +47,7 @@ namespace NesGUI
         public static void ReadLabels()
         {
             int labels = 0;
-            foreach (GUIItem label in GuiMaker.labels)
+            foreach (GUIItem label in GuiMaker.Labels)
             {
                 string rectName = label.parent.name;
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
@@ -63,13 +63,13 @@ namespace NesGUI
         public static void ReadTextfields()
         {
             int tf = 0;
-            foreach (GUIItem field in GuiMaker.textfields)
+            foreach (GUIItem field in GuiMaker.Textfields)
             {
                 string rectName = field.parent.name;
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = field.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("//Textfield pass");
+               
                 program.AppendLine($"string {varName};");
                 program.AppendLine($"{varName} = Widgets.TextField({rectName},{varName});");
                 tf++;
@@ -82,13 +82,13 @@ namespace NesGUI
         public static void ReadCheckBoxes()
         {
             int box = 0;
-            foreach (GUIItem checkbox in GuiMaker.checkboxes)
+            foreach (GUIItem checkbox in GuiMaker.Checkboxes)
             {
                 string rectName = checkbox.parent.name;
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = checkbox.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("//Checkbox pass");
+               
                 program.AppendLine($"bool {varName} = false;");
                 program.AppendLine($" Widgets.CheckboxLabeled({rectName},\"{checkbox.label}\",ref {varName});");
                 box++;
@@ -104,10 +104,15 @@ namespace NesGUI
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
             path += "/output.txt";
             program.AppendLine("//COMPILED BY NESGUI");
+            program.AppendLine("//Rect pass");
             ReadRects();
+            program.AppendLine("//Button pass");
             ReadButtons();
+            program.AppendLine("//Checkbox pass");
             ReadCheckBoxes();
+            program.AppendLine("//Label pass");
             ReadLabels();
+            program.AppendLine("//Textfield pass");
             ReadTextfields();
             program.AppendLine("//END NESGUI CODE");
 
