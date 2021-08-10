@@ -100,7 +100,7 @@ namespace NesGUI
         public static void ReadAndWriteGUI()
         {
             path = Path.GetFullPath(Path.Combine(Application.dataPath, @"..\"));
-            path = $"{path}/NesGUI/Output";
+            path = $"{path}NesGUI/Output";
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
             path += "/output.txt";
             program.AppendLine("//COMPILED BY NESGUI");
@@ -111,6 +111,7 @@ namespace NesGUI
             ReadTextfields();
             program.AppendLine("//END NESGUI CODE");
 
+            Log.Error($"Hey! This isn't an error. Just wanted to say:\n Wrote code file to: {path}");
             File.WriteAllText(path, program.ToString());
             program.Clear();
         }

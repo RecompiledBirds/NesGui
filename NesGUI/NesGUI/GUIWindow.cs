@@ -49,7 +49,7 @@ namespace NesGUI
         private string yPosBuffer;
 
 
-
+        #region editor windows
         public class CreateItemWinow : Window
         {
             public override void OnCancelKeyPressed()
@@ -384,6 +384,8 @@ namespace NesGUI
                 return result;
             }
         }
+
+        #endregion
         public override void DoWindowContents(Rect inRect)
         {
             Rect closeRect = new Rect(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
@@ -406,11 +408,13 @@ namespace NesGUI
 
             Rect changeRectPos = new Rect(new Vector2(yPosInputField.xMax + 5, 10), new Vector2(80, 40));
 
-
+            
 
             Rect enableOrDisableDrawnRects = new Rect(new Vector2(changeRectPos.xMax + 10, 10), new Vector2(80, 40));
 
-            Rect exportButtonRect = new Rect(new Vector2(inRect.xMax - 60, 10), new Vector2(40, 40));
+            Rect exportButtonRect = new Rect(new Vector2(inRect.xMax - 80, 10), new Vector2(40, 40));
+            Rect deleteItemRect = new Rect(new Vector2(enableOrDisableDrawnRects.xMax + 10, 10), new Vector2(80, 40));
+            bool deleteItem = Widgets.ButtonText(deleteItemRect, "Delete item");
 
             bool export = Widgets.ButtonText(exportButtonRect, "Export GUI");
             if (export)
@@ -456,7 +460,10 @@ namespace NesGUI
             {
                 Find.WindowStack.Add(new FloatMenu(GetEditableItems()));
             }
-
+            if (deleteItem)
+            {
+                Find.WindowStack.Add(new FloatMenu(DeleteItems()));
+            }
             foreach(GUIItem item in GuiMaker.items)
             {
                 item.Draw();
@@ -466,6 +473,21 @@ namespace NesGUI
         public bool IsEnabled(GUIItem rect)
         {
             return ( !GuiMaker.enabledRects.ContainsKey(rect) || GuiMaker.enabledRects[rect]);
+        }
+        
+        public List<FloatMenuOption > DeleteItems()
+        {
+            List<FloatMenuOption> res = new List<FloatMenuOption>();
+
+            foreach (GUIItem item in GuiMaker.items)
+            {
+                res.Add(new FloatMenuOption($"{item.name}", delegate ()
+                {
+                    GuiMaker.Delete(item);
+                }));
+            }
+
+            return res;
         }
         public List<FloatMenuOption> ToggleRects()
         {

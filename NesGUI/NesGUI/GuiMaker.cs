@@ -9,6 +9,7 @@ namespace NesGUI
 {
     public class GuiMaker
     {
+        //TODO: Convert lists to Dictionary<string, GUIItem> and condense.
         public static List<GUIItem> items = new List<GUIItem>();
         public static List<GUIItem> buttons = new List<GUIItem>();
         public static List<GUIItem> rectangles = new List<GUIItem>();
@@ -58,5 +59,34 @@ namespace NesGUI
             items.Add(GI);
         }
 
+        public static void Delete(GUIItem item)
+        {
+            items.Remove(item);
+            if (item.GuiType == GUIType.Button)
+            {
+                buttons.Remove(item);
+                return;
+            }else if (item.GuiType == GUIType.Checkbox)
+            {
+                checkboxes.Remove(item);
+                return;
+            }else if (item.GuiType == GUIType.Label)
+            {
+                labels.Remove(item);
+                return;
+            }else if (item.GuiType == GUIType.Line)
+            {
+                lines.Remove(item);
+                return;
+            }else if (item.GuiType == GUIType.Rect)
+            {
+                rectangles.Remove(item);
+                return;
+            }else if (item.GuiType == GUIType.Textfield)
+            {
+                textfields.Remove(item);
+                return;
+            }
+        }
     }
 }
