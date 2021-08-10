@@ -77,7 +77,7 @@ namespace NesGUI
                 if (!guiItems.ContainsKey("textfields"))
                     return new List<GUIItem>();
 
-                return guiItems["checkboxes"];
+                return guiItems["textfields"];
             }
         }
         public static Dictionary<GUIItem, bool> enabledRects = new Dictionary<GUIItem, bool>();

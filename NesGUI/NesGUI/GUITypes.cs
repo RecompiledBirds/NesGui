@@ -21,6 +21,30 @@ namespace NesGUI
         GameFont font;
         TextAnchor anchor;
         bool placeholder;
+
+        public TextAnchor GetTextAnchor
+        {
+            get
+            {
+                return anchor;
+            }
+        }
+        public GameFont GetGameFont
+        {
+            get
+            {
+                return font;
+            }
+        }
+
+        public void SetFont(GameFont font)
+        {
+            this.font = font;
+        }
+        public void SetAnchor(TextAnchor anchor)
+        {
+            this.anchor = anchor;
+        }
         public enum TextElemType
         {
             Button,
@@ -42,6 +66,7 @@ namespace NesGUI
         {
             TextAnchor prevAnchor = Text.Anchor;
             GameFont prevFont = Text.Font;
+            Text.Anchor = anchor;
             Text.Font = font;
             if (TextElemType.Button==type)
             {
@@ -58,6 +83,7 @@ namespace NesGUI
             {
                 Widgets.CheckboxLabeled(GetRectWithOffset, label, ref placeholder);
             }
+            Text.Anchor = prevAnchor;
             Text.Font = prevFont;
         }
         public override void Delete()

@@ -35,8 +35,20 @@ namespace NesGUI
                 rectName= new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = button.name;
                 varName = new string(varName.ToCharArray().Where(ch=>!char.IsWhiteSpace(ch)).ToArray());
-                
+                program.AppendLine("prevFont = Text.Font;");
+                program.AppendLine("textAnchor = Text.Anchor;");
+                GUITextElement elem = (GUITextElement)button;
+                string fontName = elem.GetGameFont.ToString();
+                string anchorName = elem.GetTextAnchor.ToString();
+                program.AppendLine($"Text.Font = GameFont.{fontName};");
+                program.AppendLine($"Text.Anchor = TextAnchor.{anchorName};");
+
+                program.AppendLine();
                 program.AppendLine($"bool {varName} = Widgets.ButtonText({rectName},\"{button.label}\");");
+                program.AppendLine();
+
+                program.AppendLine($"Text.Font = prevFont;");
+                program.AppendLine($"Text.Anchor = textAnchor;");
                 buttons++;
             }
             Log.Message($"Read {buttons} buttons.");
@@ -53,7 +65,25 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = label.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
+                program.AppendLine("prevFont = Text.Font;");
+                program.AppendLine("textAnchor = Text.Anchor;");
+
+                GUITextElement elem = (GUITextElement)label;
+
+                string fontName = elem.GetGameFont.ToString();
+                string anchorName = elem.GetTextAnchor.ToString();
+
+                program.AppendLine($"Text.Font = GameFont.{fontName};");
+                program.AppendLine($"Text.Anchor = TextAnchor.{anchorName};");
+                
+                program.AppendLine();
+                
                 program.AppendLine($"Widgets.Label({rectName},\"{label.label}\");");
+                
+                program.AppendLine();
+
+                program.AppendLine($"Text.Font = prevFont;");
+                program.AppendLine($"Text.Anchor = textAnchor;");
                 labels++;
             }
             Log.Message($"Read {labels} labels.");
@@ -69,9 +99,28 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = field.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
+                //Get current font & anchor
+                GUITextElement elem = (GUITextElement)field;
+                
+                program.AppendLine("prevFont = Text.Font;");
+                program.AppendLine("textAnchor = Text.Anchor;");
                
+                string fontName = elem.GetGameFont.ToString();
+                string anchorName = elem.GetTextAnchor.ToString();
+
+                //Set font & anchor
+                program.AppendLine($"Text.Font = GameFont.{fontName};");
+                program.AppendLine($"Text.Anchor = TextAnchor.{anchorName};");
+                
+                program.AppendLine();
+                
                 program.AppendLine($"string {varName};");
                 program.AppendLine($"{varName} = Widgets.TextField({rectName},{varName});");
+                program.AppendLine();
+                //Reset font & anchor
+
+                program.AppendLine($"Text.Font = prevFont;");
+                program.AppendLine($"Text.Anchor = textAnchor;");
                 tf++;
             }
             Log.Message($"Read {tf} textfields.");
@@ -88,9 +137,23 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = checkbox.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-               
+
+                program.AppendLine("prevFont = Text.Font;");
+                program.AppendLine("textAnchor = Text.Anchor;");
+                GUITextElement elem = (GUITextElement)checkbox;
+                string fontName = elem.GetGameFont.ToString();
+                string anchorName = elem.GetTextAnchor.ToString();
+
+                program.AppendLine($"Text.Font = GameFont.{fontName};");
+                program.AppendLine($"Text.Anchor = TextAnchor.{anchorName};");
+
+                program.AppendLine();
                 program.AppendLine($"bool {varName} = false;");
                 program.AppendLine($" Widgets.CheckboxLabeled({rectName},\"{checkbox.label}\",ref {varName});");
+                program.AppendLine();
+
+                program.AppendLine($"Text.Font = prevFont;");
+                program.AppendLine($"Text.Anchor = textAnchor;");
                 box++;
             }
             Log.Message($"Read {box} boxes.");
@@ -104,16 +167,31 @@ namespace NesGUI
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
             path += "/output.txt";
             program.AppendLine("//COMPILED BY NESGUI");
+            program.AppendLine("//Prepare varibles");
+            program.AppendLine();
+            program.AppendLine("GameFont prevFont = Text.Font;");
+            program.AppendLine("TextAnchor textAnchor = Text.Anchor;");
+            program.AppendLine();
             program.AppendLine("//Rect pass");
+            program.AppendLine();
             ReadRects();
+            program.AppendLine();
             program.AppendLine("//Button pass");
+            program.AppendLine();
             ReadButtons();
+            program.AppendLine();
             program.AppendLine("//Checkbox pass");
+            program.AppendLine();
             ReadCheckBoxes();
+            program.AppendLine();
             program.AppendLine("//Label pass");
+            program.AppendLine();
             ReadLabels();
+            program.AppendLine();
             program.AppendLine("//Textfield pass");
+            program.AppendLine();
             ReadTextfields();
+            program.AppendLine();
             program.AppendLine("//END NESGUI CODE");
 
             Log.Error($"Hey! This isn't an error. Just wanted to say:\n Wrote code file to: {path}");
