@@ -91,6 +91,33 @@ namespace NesGUI
                 Widgets.TextFieldNumeric(sizeXRect, ref rect.size.x, ref xSizeBuffer);
                 Widgets.TextFieldNumeric(sizeYRect, ref rect.size.y, ref ySizeBuffer);
                 //END NESGUI CODE
+
+                //Scroll controls
+                Event e = Event.current;
+                if (e.isScrollWheel)
+                {
+                    if (Mouse.IsOver(posXRect))
+                    {
+                        rect.pos.x += Utility.DetermineScrollDelta(e);
+                        xPosBuffer = rect.pos.x.ToString();
+                    }
+                    if (Mouse.IsOver(posyrect))
+                    {
+                        rect.pos.y += Utility.DetermineScrollDelta(e);
+                        yPosBuffer = rect.pos.y.ToString();
+                    }
+                    if (Mouse.IsOver(sizeXRect))
+                    {
+                        rect.size.x += Utility.DetermineScrollDelta(e);
+                        xSizeBuffer = rect.size.x.ToString();
+                    }
+                    if (Mouse.IsOver(sizeYRect))
+                    {
+                        rect.size.y += Utility.DetermineScrollDelta(e);
+                        ySizeBuffer = rect.size.y.ToString();
+                    }
+                }
+
                 rect.UpdateRect();
 
                 return;

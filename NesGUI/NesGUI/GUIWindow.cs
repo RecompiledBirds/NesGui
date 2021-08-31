@@ -30,6 +30,15 @@ namespace NesGUI
         }
     }
 
+    public static class DebugActionsMisc
+    {
+        [DebugAction("Mods", null, false, false, allowedGameStates = AllowedGameStates.Entry)]
+        private static void ActivateNesGuiWindow()
+        {
+            Find.WindowStack.Add(new NesGUIWindow());
+        }
+                
+    }
 
     public class NesGUIWindow : Window
     {
@@ -147,6 +156,31 @@ namespace NesGUI
             Widgets.TextFieldNumeric(yPosInputField, ref rectPos.y, ref yPosBuffer, min: 50);
 
             bool changePosOfRect = Widgets.ButtonText(changeRectPos, "Edit item");
+
+            //Scroll controls
+            Event e = Event.current;
+            if (e.isScrollWheel)
+            {
+                if (Mouse.IsOver(xSizeInputField)) {
+                    rectSize.x += Utility.DetermineScrollDelta(e);
+                    xSizeBuffer = rectSize.x.ToString();
+                }
+                if (Mouse.IsOver(ySizeInputField))
+                {
+                    rectSize.y += Utility.DetermineScrollDelta(e);
+                    ySizeBuffer = rectSize.y.ToString();
+                }
+                if (Mouse.IsOver(xPosInputField))
+                {
+                    rectPos.x += Utility.DetermineScrollDelta(e);
+                    xPosBuffer = rectPos.x.ToString();
+                }
+                if (Mouse.IsOver(yPosInputField))
+                {
+                    rectPos.y += Utility.DetermineScrollDelta(e);
+                    yPosBuffer = rectPos.y.ToString();
+                }
+            }
 
             Widgets.DrawBox(new Rect(rectPos, rectSize), 4);
             if (toggleRect)
