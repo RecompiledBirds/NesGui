@@ -30,6 +30,15 @@ namespace NesGUI
         }
     }
 
+    public static class DebugActionsMisc
+    {
+        [DebugAction("Mods", null, false, false, allowedGameStates = AllowedGameStates.Entry)]
+        private static void ActivateNesGuiWindow()
+        {
+            Find.WindowStack.Add(new NesGUIWindow());
+        }
+                
+    }
 
     public class NesGUIWindow : Window
     {
