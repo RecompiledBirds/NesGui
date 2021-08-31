@@ -157,6 +157,31 @@ namespace NesGUI
 
             bool changePosOfRect = Widgets.ButtonText(changeRectPos, "Edit item");
 
+            //Scroll controls
+            Event e = Event.current;
+            if (e.isScrollWheel)
+            {
+                if (Mouse.IsOver(xSizeInputField)) {
+                    rectSize.x += Utility.DetermineScrollDelta(e);
+                    xSizeBuffer = rectSize.x.ToString();
+                }
+                if (Mouse.IsOver(ySizeInputField))
+                {
+                    rectSize.y += Utility.DetermineScrollDelta(e);
+                    ySizeBuffer = rectSize.y.ToString();
+                }
+                if (Mouse.IsOver(xPosInputField))
+                {
+                    rectPos.x += Utility.DetermineScrollDelta(e);
+                    xPosBuffer = rectPos.x.ToString();
+                }
+                if (Mouse.IsOver(yPosInputField))
+                {
+                    rectPos.y += Utility.DetermineScrollDelta(e);
+                    yPosBuffer = rectPos.y.ToString();
+                }
+            }
+
             Widgets.DrawBox(new Rect(rectPos, rectSize), 4);
             if (toggleRect)
             {

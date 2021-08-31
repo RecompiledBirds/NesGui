@@ -169,6 +169,22 @@ namespace NesGUI
 
                 //END NESGUI CODE
 
+                //Scroll controls
+                Event e = Event.current;
+                if (e.isScrollWheel)
+                {
+                    if (Mouse.IsOver(sizex))
+                    {
+                        size.y += Utility.DetermineScrollDelta(e);
+                        ySizeBuffer = size.y.ToString();
+                    }
+                    if (Mouse.IsOver(sizey))
+                    {
+                        size.x += Utility.DetermineScrollDelta(e);
+                        xSizeBuffer = size.x.ToString();
+                    }
+                }
+
                 if (Createbutton && name != null)
                 {
                     GuiMaker.MakeRect(size, pos, name);
