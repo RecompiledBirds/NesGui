@@ -149,39 +149,15 @@ namespace NesGUI
             Widgets.Label(labelSizeRect, "Change window size:");
             Widgets.Label(labelPosRect, "Change window pos:");
             bool makeNewItem = Widgets.ButtonText(addItemButtonRect, "New item");
-            Widgets.TextFieldNumeric(xSizeInputField, ref rectSize.x, ref xSizeBuffer);
-            Widgets.TextFieldNumeric(ySizeInputField, ref rectSize.y, ref ySizeBuffer);
+            Utility.NumericScrollWheelField(xSizeInputField, ref rectSize.x, ref xSizeBuffer);
+            Utility.NumericScrollWheelField(ySizeInputField, ref rectSize.y, ref ySizeBuffer);
 
-            Widgets.TextFieldNumeric(xPosInputField, ref rectPos.x, ref xPosBuffer);
-            Widgets.TextFieldNumeric(yPosInputField, ref rectPos.y, ref yPosBuffer, min: 50);
+            Utility.NumericScrollWheelField(xPosInputField, ref rectPos.x, ref xPosBuffer);
+            Utility.NumericScrollWheelField(yPosInputField, ref rectPos.y, ref yPosBuffer, min: 50);
 
             bool changePosOfRect = Widgets.ButtonText(changeRectPos, "Edit item");
 
-            //Scroll controls
-            Event e = Event.current;
-            if (e.isScrollWheel)
-            {
-                if (Mouse.IsOver(xSizeInputField)) {
-                    rectSize.x += Utility.DetermineScrollDelta(e);
-                    xSizeBuffer = rectSize.x.ToString();
-                }
-                if (Mouse.IsOver(ySizeInputField))
-                {
-                    rectSize.y += Utility.DetermineScrollDelta(e);
-                    ySizeBuffer = rectSize.y.ToString();
-                }
-                if (Mouse.IsOver(xPosInputField))
-                {
-                    rectPos.x += Utility.DetermineScrollDelta(e);
-                    xPosBuffer = rectPos.x.ToString();
-                }
-                if (Mouse.IsOver(yPosInputField))
-                {
-                    rectPos.y += Utility.DetermineScrollDelta(e);
-                    yPosBuffer = rectPos.y.ToString();
-                }
-            }
-
+            
             Widgets.DrawBox(new Rect(rectPos, rectSize), 4);
             if (toggleRect)
             {

@@ -35,8 +35,8 @@ namespace NesGUI
                 rectName= new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = button.name;
                 varName = new string(varName.ToCharArray().Where(ch=>!char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("prevFont = Text.Font;");
-                program.AppendLine("textAnchor = Text.Anchor;");
+
+
                 GUITextElement elem = (GUITextElement)button;
                 string fontName = elem.GetGameFont.ToString();
                 string anchorName = elem.GetTextAnchor.ToString();
@@ -65,8 +65,6 @@ namespace NesGUI
                 rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
                 string varName = label.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-                program.AppendLine("prevFont = Text.Font;");
-                program.AppendLine("textAnchor = Text.Anchor;");
 
                 GUITextElement elem = (GUITextElement)label;
 
@@ -102,8 +100,6 @@ namespace NesGUI
                 //Get current font & anchor
                 GUITextElement elem = (GUITextElement)field;
                 
-                program.AppendLine("prevFont = Text.Font;");
-                program.AppendLine("textAnchor = Text.Anchor;");
                
                 string fontName = elem.GetGameFont.ToString();
                 string anchorName = elem.GetTextAnchor.ToString();
@@ -138,8 +134,6 @@ namespace NesGUI
                 string varName = checkbox.name;
                 varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
 
-                program.AppendLine("prevFont = Text.Font;");
-                program.AppendLine("textAnchor = Text.Anchor;");
                 GUITextElement elem = (GUITextElement)checkbox;
                 string fontName = elem.GetGameFont.ToString();
                 string anchorName = elem.GetTextAnchor.ToString();

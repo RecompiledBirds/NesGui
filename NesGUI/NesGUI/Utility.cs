@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Verse;
 
 namespace NesGUI
 {
@@ -24,6 +25,22 @@ namespace NesGUI
 
 
             return returnInt;
+        }
+
+        public static void NumericScrollWheelField(Rect rect, ref float val, ref string valBuffer,float min = 0, float max = float.MaxValue, string toolTipstring = null)
+        {
+            Widgets.TextFieldNumeric(rect, ref val, ref valBuffer,min,max);
+            if (toolTipstring != null)
+            {
+                TooltipHandler.TipRegion(rect,toolTipstring);
+            }
+            //Scroll controls
+            Event e = Event.current;
+            if (e.isScrollWheel && Mouse.IsOver(rect))
+            {
+                val += DetermineScrollDelta(e);
+                valBuffer = val.ToString();
+            }
         }
     }
 }

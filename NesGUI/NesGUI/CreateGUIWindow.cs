@@ -161,29 +161,15 @@ namespace NesGUI
                 //Textfield pass
                 name = Widgets.TextField(inputfieldname, name);
 
-                Widgets.TextFieldNumeric(sizex, ref size.y, ref ySizeBuffer);
+                Utility.NumericScrollWheelField(sizex, ref size.y, ref ySizeBuffer);
 
 
-                Widgets.TextFieldNumeric(sizey, ref size.x, ref xSizeBuffer);
+                Utility.NumericScrollWheelField(sizey, ref size.x, ref xSizeBuffer);
 
 
                 //END NESGUI CODE
 
-                //Scroll controls
-                Event e = Event.current;
-                if (e.isScrollWheel)
-                {
-                    if (Mouse.IsOver(sizex))
-                    {
-                        size.y += Utility.DetermineScrollDelta(e);
-                        ySizeBuffer = size.y.ToString();
-                    }
-                    if (Mouse.IsOver(sizey))
-                    {
-                        size.x += Utility.DetermineScrollDelta(e);
-                        xSizeBuffer = size.x.ToString();
-                    }
-                }
+                
 
                 if (Createbutton && name != null)
                 {
@@ -214,12 +200,12 @@ namespace NesGUI
                 name = Widgets.TextField(nameFieldRect, name);
 
                 Widgets.Label(labelPosOneRect, "Start point:");
-                Widgets.TextFieldNumeric(xPosOneRect, ref posOne.x, ref xSizeBuffer);
-                Widgets.TextFieldNumeric(yPosOneRect, ref posOne.y, ref ySizeBuffer);
+                Utility.NumericScrollWheelField(xPosOneRect, ref posOne.x, ref xSizeBuffer);
+                Utility.NumericScrollWheelField(yPosOneRect, ref posOne.y, ref ySizeBuffer);
 
                 Widgets.Label(labelPosTwoRect, "End point:");
-                Widgets.TextFieldNumeric(xPosTwoRect, ref posTwo.x, ref xTwoSizeBuffer);
-                Widgets.TextFieldNumeric(yPosTwoRect, ref posTwo.y, ref yTwoSizeBuffer);
+                Utility.NumericScrollWheelField(xPosTwoRect, ref posTwo.x, ref xTwoSizeBuffer);
+                Utility.NumericScrollWheelField(yPosTwoRect, ref posTwo.y, ref yTwoSizeBuffer);
 
                 Widgets.DrawLine(new Vector2(posOne.x, posOne.y + 80), new Vector2(posTwo.x, posTwo.y + 80), Color.white, 1);
 
